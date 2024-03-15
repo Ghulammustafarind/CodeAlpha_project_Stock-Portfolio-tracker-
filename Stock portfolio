@@ -1,0 +1,115 @@
+import yfinance as yf
+
+
+
+class StockPortfolio:
+
+    def __init__(self):
+
+        self.Portfolio = {}
+
+
+
+    def AddStock(self, Symbol, Quantity):
+
+        if Symbol in self.Portfolio:
+
+            self.Portfolio[Symbol] += Quantity
+
+        else:
+
+            self.Portfolio[Symbol] = Quantity
+
+
+
+    def RemoveStock(self, Symbol, Quantity):
+
+        if Symbol in self.Portfolio:
+
+            if Quantity >= self.Portfolio[Symbol]:
+
+                del self.Portfolio[Symbol]
+
+            else:
+
+                self.Portfolio[Symbol] -= Quantity
+
+        else:
+
+            print(f"Error: Stock {Symbol} not found in the portfolio.")
+
+
+
+    def TrackPerformance(self):
+
+        TotalValue = 0
+
+        for Symbol, Quantity in self.Portfolio.items():
+
+            StockInfo = yf.Ticker(Symbol)
+
+            CurrentPrice = StockInfo.history(Period="1 day")['Close'].iloc[-1]
+
+            TotalValue += CurrentPrice * Quantity
+
+            print(f"{Symbol}: {Quantity} shares, Current Price: ${CurrentPrice:.2f}, Total Value: ${CurrentPrice * Quantity:.2f}")
+
+
+
+        print(f"\nTotal Portfolio Value: ${TotalValue:.2f}")
+
+
+
+if __name__ == "__main__":
+
+    Portfolio = StockPortfolio()
+
+
+
+    while True:
+
+        print("\nMenu:")
+
+        print("1. Add Stock")
+
+        print("2. Remove Stock")
+
+        print("3. Track Performance")
+
+        print("4. Exit")
+
+
+
+        Choice = input("Enter your choice (1/2/3/4): ")
+
+
+
+        if Choice == '1':
+
+            Symbol = input("Enter stock symbol: ").upper()
+
+            Quantity = int(input("Enter quantity: "))
+
+            Portfolio.AddStock(Symbol, Quantity)
+
+        elif Choice == '2':
+
+            Symbol = input("Enter stock symbol: ").upper()
+
+            Quantity = int(input("Enter quantity to remove: "))
+
+            Portfolio.RemoveStock(Symbol, Quantity)
+
+        elif Choice == '3':
+
+            Portfolio.TrackPerformance()
+
+        elif Choice == '4':
+
+            print("Exiting program. Goodbye!")
+
+            break
+
+        else:
+
+            print("Invalid choice. Please enter a valid option.")
